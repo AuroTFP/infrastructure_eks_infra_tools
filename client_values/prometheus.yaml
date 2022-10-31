@@ -1,0 +1,143 @@
+nameOverride: prometheus
+fullnameOverride: prometheus
+commonLabels:
+  cluster: {CLIENT_CLUSTER}
+  stage: prod
+  region: us-east-1
+
+# defaultRules:
+#   create: false
+# alertmanager:
+#   enabled: false
+grafana:
+  enabled: false
+kubelet:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+coreDns:
+  enabled: false
+kubeApiServer:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+prometheusOperator:
+  serviceAccount:
+    create: false
+    name: thanos-role
+  kubeletService:
+    enabled: false
+  resources:
+    requests:
+      cpu: 500m
+      memory: 100Mi
+    limits:
+      cpu: 700m
+      memory: 200Mi
+
+prometheus: 
+  serviceAccount:
+    create: false
+    name: thanos-role
+  prometheusSpec:
+    externalLabels:
+      cluster: {CLIENT_CLUSTER}
+      region: us-east-1
+    scrapeInterval: "1m"
+    scrapeTimeout: "60s"
+    evaluationInterval: "1m"
+    retention: 7d
+    resources:
+      requests:
+        cpu: 200m
+        memory: 1000Mi
+      limits:
+        cpu: 2500m
+        memory: 20000Mi
+    storageSpec:
+      volumeClaimTemplate:
+        metadata:
+          name: prometheus
+        spec:
+          storageClassName: gp2
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 30Gi
+    thanos:
+      baseImage: quay.io/thanos/thanos
+      objectStorageConfig:
+        name: thanos-objstore-config
+        key: thanos.yaml
+  thanosIngress:
+    enabled: false
+    hosts: 
+    - {CLIENT_CLUSTER}.aws.aurotfp.com
+    pathType: ImplementationSpecific
+    paths:
+    - /*
+    annotations:
+      external-dns/zone: private
+      external-dns.alpha.kubernetes.io/hostname: {CLIENT_CLUSTER}.aws.aurotfp.com
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internal
+      alb.ingress.kubernetes.io/backend-protocol-version: GRPC
+      alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-Ext-2018-06
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:770688751007:certificate/61c1254c-05f6-426c-9f4e-fc8ac296a802
+  thanosServiceExternal:
+    labels:
+      cluster: {CLIENT_CLUSTER}
+      stage: prod
+      region: us-east-1
+    enabled: true
+alertmanager:
+  serviceAccount:
+    create: false
+    name: thanos-role
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        metadata:
+          name: alertmanager
+        spec:
+          storageClassName: gp2
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+  tplConfig: true #allows use of templated values in config section
+  config:
+    route:
+      group_by: ['alertname']
+      repeat_interval: 3h
+      receiver: 'default'
+      group_wait: 1m
+      group_interval: 10m
+      routes:
+        - match:
+            alertname: KafkaConsumersGroup
+          receiver: 'null'
+        - match:
+            alertname: ConsumerLagAlert
+          receiver: 'null'
+        - match:
+            alertname: Watchdog
+          receiver: 'null'
+      receivers: 
+      - name: "null" # Null receiver is to mute alerts with this name would act differently than silences
+      - name: 'default'
+        webhook_configs:
+        - send_resolved: true
+          url: http://alertmanager-sns-forwarder.platform:9087/alert/NOTIFICATION
+
+kubeStateMetrics:
+  enabled: true
+nodeExporter:
+  enabled: true
