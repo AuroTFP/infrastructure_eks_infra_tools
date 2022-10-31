@@ -1,0 +1,125 @@
+
+grafana:
+  enabled: true
+  additionalDataSources:
+    - name: prometheus-sample
+      type: prometheus
+      url: http://thanos-query.platform.svc.cluster.local:9090
+kubelet:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+coreDns:
+  enabled: false
+kubeApiServer:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+prometheusOperator:
+  kubeletService:
+    enabled: false
+  resources:
+    requests:
+      cpu: 500m
+      memory: 100Mi
+    limits:
+      cpu: 700m
+      memory: 200Mi
+
+prometheus:
+  enabled: true
+  serviceAccount:
+    create: false
+    name: thanos-role
+  prometheusSpec:
+    externalLabels:
+      cluster: monitoring
+      region: us-east-1
+    scrapeInterval: "1m"
+    scrapeTimeout: "60s"
+    evaluationInterval: "1m"
+    retention: 7d
+    resources:
+      requests:
+        cpu: 200m
+        memory: 1000Mi
+      limits:
+        cpu: 2500m
+        memory: 20000Mi
+    storageSpec:
+      volumeClaimTemplate:
+        metadata:
+          name: prometheus
+        spec:
+          storageClassName: gp2
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 30Gi
+    thanos:
+      baseImage: quay.io/thanos/thanos
+      objectStorageConfig:
+        name: thanos-objstore-config
+        key: thanos.yaml
+  thanosService:
+    enabled: true
+  thanosIngress:
+    enabled: false
+    paths:
+    - /*
+    annotations:
+      external-dns/zone: private
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/scheme: internal
+      alb.ingress.kubernetes.io/backend-protocol-version: GRPC
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-Ext-2018-06
+      
+alertmanager:
+  serviceAccount:
+    create: false
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        metadata:
+          name: alertmanager
+        spec:
+          storageClassName: gp2
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+  tplConfig: true 
+  config:
+    route:
+      group_by: ['alertname']
+      repeat_interval: 3h
+      receiver: 'default'
+      group_wait: 1m
+      group_interval: 10m
+      routes:
+        - match:
+            alertname: KafkaConsumersGroup
+          receiver: 'null'
+        - match:
+            alertname: ConsumerLagAlert
+          receiver: 'null'
+        - match:
+            alertname: Watchdog
+          receiver: 'null'
+      receivers: 
+      - name: "null"
+      - name: 'default'
+        webhook_configs:
+        - send_resolved: true
+          url: http://alertmanager-sns-forwarder.monitoring:9087/alert/NOTIFICATION
+
+kubeStateMetrics:
+  enabled: true
+nodeExporter:
+  enabled: true

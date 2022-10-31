@@ -1,0 +1,7 @@
+#  kubectl -n monitoring create secret generic thanos-objstore-config --from-file=thanos.yaml
+type: s3
+config:
+  bucket: dev-demo-thanos-metrics-prometheus
+  endpoint: s3.us-east-1.amazonaws.com
+  sse_config:
+    type: "SSE-S3"

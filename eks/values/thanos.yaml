@@ -1,0 +1,51 @@
+serviceAccount:
+  name: thanos-role
+objstoreConfig: |-
+  type: s3
+  config:
+    bucket: dev-demo-thanos-metrics-prometheus
+    endpoint: s3.us-east-1.amazonaws.com
+    sse_config:
+      type: "SSE-S3"
+query:
+  enabled: true
+  stores:
+  # Stores, they point to observee sidecard endpoints
+  #  - a98f04a74de4c40d59e4c4089deb8c8c-1096198524.us-east-1.elb.amazonaws.com:10901
+  #  - observee.aws.aurotfp.com:443
+  
+  # dnsDiscovery points to the location of the internal thanos sidecar and namespace
+  dnsDiscovery:
+    enabled: enable
+    sidecarsService: prometheus-thanos-discovery
+    sidecarsNamespace: monitoring
+  
+bucketweb:
+  enabled: true
+compactor:
+  enabled: true
+  serviceAccount:
+    name: thanos-role
+    create: false
+storegateway:
+  enabled: true
+  serviceAccount:
+    name: thanos-role
+    create: false
+ruler:
+  enabled: true
+  serviceAccount:
+    name: thanos-role
+    create: false
+  alertmanagers:
+    - http://kube-prometheus-alertmanager.monitoring.svc.cluster.local:9093
+  config: |-
+    groups:
+      - name: "metamonitoring"
+        rules:
+          - alert: "PrometheusDown"
+            expr: absent(up{prometheus="monitoring/kube-prometheus"})
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true

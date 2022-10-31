@@ -1,0 +1,8 @@
+#  kubeclt apply -f thanos-role.yaml  -n monitoring
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: thanos-role
+  namespace: monitoring
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::770688751007:role/thanos-monitoring-role
