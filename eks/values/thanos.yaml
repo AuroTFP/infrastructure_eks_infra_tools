@@ -1,3 +1,6 @@
+commonLabels:
+  cluster: monitoring
+  region: us-east-1
 serviceAccount:
   name: thanos-role
 objstoreConfig: |-
@@ -17,7 +20,7 @@ query:
   # dnsDiscovery points to the location of the internal thanos sidecar and namespace
   dnsDiscovery:
     enabled: enable
-    sidecarsService: prometheus-thanos-discovery
+    sidecarsService: kube-prometheus-stack-thanos-discovery
     sidecarsNamespace: monitoring
   
 bucketweb:
@@ -34,6 +37,9 @@ storegateway:
     create: false
 ruler:
   enabled: true
+  extraFlags:
+    - --label=cluster="monitoring"
+    - --label=region="us-east-1"
   serviceAccount:
     name: thanos-role
     create: false
