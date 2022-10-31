@@ -18,7 +18,7 @@ terraform init
 terraform plan
 terraform apply
 ```
-4. After the new cluster and role are created, we proceed with the apply of the service role and secret
+4. After the new cluster and role are created, we proceed with the apply of the service account and secret
 ```
 cd iam/service_accounts
 kubectl -n monitoring create secret generic thanos-objstore-config --from-file=thanos.yaml
