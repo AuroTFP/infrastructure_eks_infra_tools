@@ -1,28 +1,29 @@
 
 grafana:
   enabled: true
-  additionalDataSources:
-    - name: prometheus-sample
-      type: prometheus
-      url: http://thanos-query.platform.svc.cluster.local:9090
+  sidecar:
+    datasources:
+        url: http://thanos-query.monitoring.svc.cluster.local:9090
 kubelet:
-  enabled: false
-kubeControllerManager:
-  enabled: false
-coreDns:
-  enabled: false
-kubeApiServer:
-  enabled: false
-kubeEtcd:
-  enabled: false
-kubeScheduler:
-  enabled: false
-kubeProxy:
-  enabled: false
+  enabled: true
+  serviceMonitor:
+    https: false
+# kubeControllerManager:
+#   enabled: false
+# coreDns:
+#   enabled: true
+# kubeApiServer:
+#   enabled: false
+# kubeEtcd:
+#   enabled: false
+# kubeScheduler:
+#   enabled: false
+# kubeProxy:
+#   enabled: true
 
 prometheusOperator:
   kubeletService:
-    enabled: false
+    enabled: true
   resources:
     requests:
       cpu: 500m

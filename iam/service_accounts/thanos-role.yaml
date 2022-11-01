@@ -1,4 +1,4 @@
-#  kubeclt apply -f thanos-role.yaml  -n monitoring
+#  kubectl apply -f thanos-role.yaml  -n monitoring
 apiVersion: v1
 kind: ServiceAccount
 metadata:
