@@ -1,0 +1,814 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: prometheus-extra
+  labels:
+    namespace: monitoring
+type: Opaque
+stringData:
+  prometheus-extra.yaml: |
+    - job_name: prometheus
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - localhost:9090
+    - job_name: node_exporter
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - localhost:9100
+      - targets:
+        - rancher:9100
+      - targets:
+        - jenkins-poc:9100
+      - targets:
+        - jenkins-prod:9100
+      - targets:
+        - airflow-prod:9100
+      - targets:
+        - airflow-poc:9100
+      - targets:
+        - airflow-dev:9100
+      - targets:
+        - airflow:9100
+      - targets:
+        - kibana:9100
+      - targets:
+        - esmaster:9100
+      - targets:
+        - esdata1:9100
+      - targets:
+        - esdata2:9100
+      - targets:
+        - logstash:9100
+      - targets:
+        - infra1:9100
+      - targets:
+        - openvpn:9100
+      - targets:
+        - spac-dropcopy-prod:9100
+      - targets:
+        - infra-vault:9100
+      - targets:
+        - kminion6:9100
+      - targets:
+        - cc-stg-dgw1:9100
+      - targets:
+        - cc-stg-mme1:9100
+      - targets:
+        - cc-stg-bbgw1:9100
+      - targets:
+        - cc-dev-vm1:9100
+      - targets:
+        - cc-stg-analytics1:9100
+      - targets:
+        - cc-stg-jobs1:9100
+      - targets:
+        - cc-stg-compute1:9100
+      - targets:
+        - cc-stg-compute2:9100
+      - targets:
+        - cc-prod-dgw1:9100
+      - targets:
+        - cc-prod-mme1:9100
+      - targets:
+        - cc-prod-bbgw1:9100
+      - targets:
+        - cc-prod-analytics1:9100
+      - targets:
+        - cc-prod-jobs1:9100
+      - targets:
+        - cc-prod-db1:9100
+      - targets:
+        - spac-proxy-prod.aws.aurotfp.com:9100
+      - targets:
+        - algo-prod-mc_spacp:9100
+      - targets:
+        - algo-prod-mc_spac_etf:9100
+      - targets:
+        - oms-prod-baml-mcspacetf:9100
+      - targets:
+        - oms-prod-baml-exosam:9100
+      - targets:
+        - crypto-proxy-prod:9100
+      - targets:
+        - algo-mc_crypto_coinbase-prod:9100
+      - targets:
+        - algo-grayscale_premium-prod:9100
+      - targets:
+        - 10.0.25.6:9100
+      - targets:
+        - cb-production-data1:9100
+      - targets:
+        - cb-production-data2:9100
+      - targets:
+        - cb-production-data3:9100
+      - targets:
+        - deep-dropcopy-poc:9100
+      - targets:
+        - deep-dropcopy-prod:9100
+      - targets:
+        - bpipe-recorder-poc-1:9100
+      - targets:
+        - bpipe-recorder-poc-2:9100
+      - targets:
+        - risk-prod:9100
+      - targets:
+        - risk-lighthouse-prod:9100
+      - targets:
+        - batchiepatchie:9100
+      - targets:
+        - batchiepatchiepoc:9100
+      - targets:
+        - 3.9.51.175:9100
+      - targets:
+        - fakevenues-CQG-Trafix-poc:9100
+      - targets:
+        - crypto-recorder-poc:9100
+      - targets:
+        - crypto-recorder-one-prod:9100
+      - targets:
+        - crypto-recorder-two-prod:9100
+      - targets:
+        - crypto-recorder-three-prod:9100
+      - targets:
+        - crypto-recorder-poc:9091
+      - targets:
+        - crypto-recorder-one-prod:9091
+      - targets:
+        - crypto-recorder-two-prod:9091
+      - targets:
+        - crypto-recorder-three-prod:9091
+      - targets:
+        - crypto-recorder-poc:9092
+      - targets:
+        - crypto-recorder-one-prod:9092
+      - targets:
+        - crypto-recorder-two-prod:9092
+      - targets:
+        - crypto-recorder-three-prod:9092
+      - targets:
+        - crypto-recorder-poc:9093
+      - targets:
+        - crypto-recorder-one-prod:9093
+      - targets:
+        - crypto-recorder-two-prod:9093
+      - targets:
+        - crypto-recorder-three-prod:9093
+      - targets:
+        - crypto-recorder-poc:9094
+      - targets:
+        - crypto-recorder-one-prod:9094
+      - targets:
+        - crypto-recorder-two-prod:9094
+      - targets:
+        - crypto-recorder-three-prod:9094
+      - targets:
+        - crypto-recorder-poc:9095
+      - targets:
+        - crypto-recorder-one-prod:9095
+      - targets:
+        - crypto-recorder-two-prod:9095
+      - targets:
+        - crypto-recorder-three-prod:9095
+      - targets:
+        - crypto-recorder-poc:9096
+      - targets:
+        - crypto-recorder-one-prod:9096
+      - targets:
+        - crypto-recorder-two-prod:9096
+      - targets:
+        - crypto-recorder-three-prod:9096
+      - targets:
+        - 10.0.35.20:9097
+      - targets:
+        - 10.0.35.20:9098
+      - targets:
+        - 10.0.35.20:9099
+      - targets:
+        - 10.0.35.20:9010
+      - targets:
+        - 10.0.35.20:9011
+    - job_name: airflow
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /admin/metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - airflow.aws.aurotfp.com:8080
+    - job_name: bloomberg-bpipe-prod
+      honor_timestamps: true
+      scrape_interval: 5s
+      scrape_timeout: 5s
+      metrics_path: /actuator/prometheus
+      scheme: http
+      static_configs:
+      - targets:
+        - kubeprodapi/bloomberg-market-data
+        - kubeprodapi/bloomberg-market-data-crypto
+        - kubeprodapi/bloomberg-market-data-macro
+        - kubeprodapi/bloomberg-market-data-bronco
+      relabel_configs:
+      - source_labels: [__address__]
+        separator: ;
+        regex: (.*)/(.*)
+        target_label: __metrics_path__
+        replacement: /$2/actuator/prometheus
+        action: replace
+      - source_labels: [__address__]
+        separator: ;
+        regex: (.*)
+        target_label: instance
+        replacement: $1
+        action: replace
+      - source_labels: [__address__]
+        separator: ;
+        regex: (.*)/(.*)
+        target_label: __address__
+        replacement: $1
+        action: replace
+    - job_name: securities-service-poc
+      honor_timestamps: true
+      scrape_interval: 5s
+      scrape_timeout: 5s
+      metrics_path: /securities-query-service/metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - kubepocapi.aws.aurotfp.com
+    - job_name: airflow-prod
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /admin/metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - airflow-prod.aws.aurotfp.com:8080
+    - job_name: airflow-poc
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /admin/metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - airflow-poc.aws.aurotfp.com:8080
+    - job_name: airflow-dev
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /admin/metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - airflow-dev.aws.aurotfp.com:8080
+    - job_name: wmi_exporter
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - commvault:9182
+    - job_name: ec2_node
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      ec2_sd_configs:
+      - endpoint: ""
+        region: us-east-1
+        refresh_interval: 1m
+        port: 9100
+        filters: []
+      relabel_configs:
+      - source_labels: [__meta_ec2_tag_Monitor]
+        separator: ;
+        regex: Prometheus
+        replacement: $1
+        action: keep
+      - source_labels: [__meta_ec2_tag_Name]
+        separator: ;
+        regex: (.*)
+        target_label: instance
+        replacement: $1
+        action: replace
+    - job_name: blackbox
+      honor_timestamps: true
+      params:
+        module:
+        - http_2xx
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /probe
+      scheme: http
+      static_configs:
+      - targets:
+        - http://google.com/
+        - https://google.com/
+        - https://mail.google.com/
+        - http://kubeprodapi.aws.aurotfp.com/cdm-metadata-processing-service/healthcheck
+        - http://kubeprodapi.aws.aurotfp.com/cdm-metadata-query-service/healthcheck
+        - https://kubeprod.aws.aurotfp.com
+        - https://kubedev1.aws.aurotfp.com:8200/v1/sys/health
+        - https://kubepoc.aws.aurotfp.com:8200/v1/sys/health
+        - https://kubeprod.aws.aurotfp.com:8200/v1/sys/health
+        - http://rancher
+        - http://kibana:5601/api/status
+        - http://airflow:8080/health
+        - http://airflow-prod:8080/health
+        - http://airflow-poc:8080/health
+        - http://airflow-dev:8080/health
+        - http://jenkins-prod.aws.aurotfp.com:8080/login
+        - http://jenkins-poc.aws.aurotfp.com:8080/login
+        - https://github.com/AuroTFP
+        - https://id.atlassian.com/login?continue=https%3A%2F%2Faurotfp.atlassian.net%2Flogin%3FredirectCount%3D1%26application%3Djira&application=jira
+        - https://hub.docker.com/orgs/aurotfp
+        - https://exosfinancial.okta.com/app/UserHome
+        - https://exosfinancial.slack.com
+        - https://www.exosfinancial.com/
+        - https://apps.exosfinancial.com/
+        - http://esmaster:9201/
+        - http://esdata1:9201/
+        - http://esdata2:9201/
+        - https://investwithvantage.com/
+        - https://client-pulse.com/
+      relabel_configs:
+      - source_labels: [__address__]
+        separator: ;
+        regex: (.*)
+        target_label: __param_target
+        replacement: $1
+        action: replace
+      - source_labels: [__param_target]
+        separator: ;
+        regex: (.*)
+        target_label: instance
+        replacement: $1
+        action: replace
+      - separator: ;
+        regex: (.*)
+        target_label: __address__
+        replacement: prometheus.aws.aurotfp.com:9115
+        action: replace
+    - job_name: spac-poc-hmm
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - spac-poc:9100
+    - job_name: spac-poc
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - spac-poc:9093
+    - job_name: algo-prod-mc_spacp-9090
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - algo-prod-mc_spacp:9090
+    - job_name: algo-prod-mc_spac_etf-9090
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - algo-prod-mc_spac_etf:9090
+    - job_name: spac-fakevenue-prod
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - spac-fakevenue-prod.aws.aurotfp.com:9093
+    - job_name: algo-prod-mcspacp
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - algo-prod-mcspacp.aws.aurotfp.com:9093
+    - job_name: algo-prod-mc_spac_etf
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - algo-prod-mc_spac_etf.aws.aurotfp.com:9093
+    - job_name: algo-mc_crypto_coinbase-prod
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - algo-mc_crypto_coinbase-prod.aws.aurotfp.com:9093
+    - job_name: algo-grayscale_premium-prod
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - algo-grayscale_premium-prod.aws.aurotfp.com:9093
+    - job_name: spac-proxy-prod.aws.aurotfp.com:9093
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - spac-proxy-prod.aws.aurotfp.com:9093
+    - job_name: spac-test-proxy-poc.aws.aurotfp.com:9093
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - spac-test-proxy-poc.aws.aurotfp.com:9093
+    - job_name: spac-dropcopy-prod-ntp
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - spac-dropcopy-prod:9091
+    - job_name: spac-proxy-prod-ntp
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - spac-proxy-prod:9091
+    - job_name: algo-prod-mc_spacp-ntp
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - algo-prod-mc_spacp:9091
+    - job_name: oms-prod-baml-exosam-ntp
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - oms-prod-baml-exosam:9091
+    - job_name: oms-prod-baml-mcspacetf-ntp
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - oms-prod-baml-mcspacetf:9091
+    - job_name: algo-mc_crypto_coinbase-prod-ntp
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - algo-mc_crypto_coinbase-prod.aws.aurotfp.com:9091
+    - job_name: algo-grayscale_premium-prod-ntp
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - algo-grayscale_premium-prod.aws.aurotfp.com:9091
+    - job_name: bo-services-prod
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - kubeprodapi/securities-updater-service
+        - kubeprodapi/accounts-query-service
+        - kubeprodapi/positions-updater-service
+        - kubeprodapi/positions-query-service
+        - kubeprodapi/market-data-query-service
+        - kubeprodapi/market-data-updater-service
+        - kubeprodapi/reconciliation-updater-service
+        - kubeprodapi/reconciliation-query-service
+        - kubeprodapi/trades-updater-service
+        - kubeprodapi/trades-query-service
+      relabel_configs:
+      - source_labels: [__address__]
+        separator: ;
+        regex: (.*)/(.*)
+        target_label: __metrics_path__
+        replacement: /$2/metrics
+        action: replace
+      - source_labels: [__address__]
+        separator: ;
+        regex: (.*)
+        target_label: instance
+        replacement: $1
+        action: replace
+      - source_labels: [__address__]
+        separator: ;
+        regex: (.*)/(.*)
+        target_label: __address__
+        replacement: $1
+        action: replace
+    - job_name: K8s-Metrics
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - inf-adm-pd1:9091
+    - job_name: airflow-exporter
+      honor_timestamps: true
+      scrape_interval: 30s
+      scrape_timeout: 10s
+      metrics_path: /admin/metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - airflow-dev.aws.aurotfp.com:8000
+    - job_name: kubernetes_dev1
+      honor_timestamps: true
+      scrape_interval: 5s
+      scrape_timeout: 5s
+      metrics_path: /metrics/
+      scheme: https
+      kubernetes_sd_configs:
+      - api_server: https://api.kcluster.dev1.aws.aurotfp.com
+        role: endpoints
+        basic_auth:
+          username: admin
+          password: <secret>
+        tls_config:
+          ca_file: /usr/local/share/ca-certificates/cert.pem
+          insecure_skip_verify: true
+        namespaces:
+          names:
+          - default
+        selectors:
+        - role: pod
+          label: release!=kafka
+      basic_auth:
+        username: admin
+        password: <secret>
+      tls_config:
+        ca_file: /usr/local/share/ca-certificates/cert.pem
+        insecure_skip_verify: true
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        separator: ;
+        regex: ()
+        target_label: __meta_kubernetes_pod_annotation_prometheus_io_path
+        replacement: /metrics
+        action: replace
+      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __meta_kubernetes_pod_container_port_number,
+          __meta_kubernetes_pod_annotation_prometheus_io_path]
+        separator: ;
+        regex: (.+);(.+);(.+);(.+)
+        target_label: __metrics_path__
+        replacement: /api/v1/namespaces/$1/pods/$2:$3/proxy$4
+        action: replace
+      - separator: ;
+        regex: (.*)
+        target_label: __address__
+        replacement: api.kcluster.dev1.aws.aurotfp.com:443
+        action: replace
+      - separator: ;
+        regex: __meta_kubernetes_pod_label_(.+)
+        replacement: $1
+        action: labelmap
+      - source_labels: [__meta_kubernetes_namespace]
+        separator: ;
+        regex: (.*)
+        target_label: kubernetes_namespace
+        replacement: $1
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_name]
+        separator: ;
+        regex: (.*)
+        target_label: kubernetes_pod_name
+        replacement: $1
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        separator: ;
+        regex: (.*)
+        target_label: instance
+        replacement: $1
+        action: replace
+    - job_name: kubernetes_poc
+      honor_timestamps: true
+      scrape_interval: 5s
+      scrape_timeout: 5s
+      metrics_path: /metrics/
+      scheme: https
+      kubernetes_sd_configs:
+      - api_server: https://api.kcluster.poc.aws.aurotfp.com
+        role: endpoints
+        basic_auth:
+          username: admin
+          password: <secret>
+        tls_config:
+          ca_file: /usr/local/share/ca-certificates/cert-poc.pem
+          insecure_skip_verify: true
+        namespaces:
+          names:
+          - default
+        selectors:
+        - role: pod
+          label: release!=kafka
+      basic_auth:
+        username: admin
+        password: <secret>
+      tls_config:
+        ca_file: /usr/local/share/ca-certificates/cert-poc.pem
+        insecure_skip_verify: true
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        separator: ;
+        regex: ()
+        target_label: __meta_kubernetes_pod_annotation_prometheus_io_path
+        replacement: /metrics
+        action: replace
+      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __meta_kubernetes_pod_container_port_number,
+          __meta_kubernetes_pod_annotation_prometheus_io_path]
+        separator: ;
+        regex: (.+);(.+);(.+);(.+)
+        target_label: __metrics_path__
+        replacement: /api/v1/namespaces/$1/pods/$2:$3/proxy$4
+        action: replace
+      - separator: ;
+        regex: (.*)
+        target_label: __address__
+        replacement: api.kcluster.poc.aws.aurotfp.com:443
+        action: replace
+      - separator: ;
+        regex: __meta_kubernetes_pod_label_(.+)
+        replacement: $1
+        action: labelmap
+      - source_labels: [__meta_kubernetes_namespace]
+        separator: ;
+        regex: (.*)
+        target_label: kubernetes_namespace
+        replacement: $1
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_name]
+        separator: ;
+        regex: (.*)
+        target_label: kubernetes_pod_name
+        replacement: $1
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        separator: ;
+        regex: (.*)
+        target_label: instance
+        replacement: $1
+        action: replace
+    - job_name: kubernetes_prod
+      honor_timestamps: true
+      scrape_interval: 5s
+      scrape_timeout: 5s
+      metrics_path: /metrics/
+      scheme: https
+      kubernetes_sd_configs:
+      - api_server: https://api.kcluster.prod.aws.aurotfp.com
+        role: endpoints
+        basic_auth:
+          username: admin
+          password: <secret>
+        tls_config:
+          ca_file: /usr/local/share/ca-certificates/cert-prod.pem
+          insecure_skip_verify: true
+        namespaces:
+          names:
+          - default
+        selectors:
+        - role: pod
+          label: release!=kafka
+      basic_auth:
+        username: admin
+        password: <secret>
+      tls_config:
+        ca_file: /usr/local/share/ca-certificates/cert-prod.pem
+        insecure_skip_verify: true
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        separator: ;
+        regex: ()
+        target_label: __meta_kubernetes_pod_annotation_prometheus_io_path
+        replacement: /metrics
+        action: replace
+      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __meta_kubernetes_pod_container_port_number,
+          __meta_kubernetes_pod_annotation_prometheus_io_path]
+        separator: ;
+        regex: (.+);(.+);(.+);(.+)
+        target_label: __metrics_path__
+        replacement: /api/v1/namespaces/$1/pods/$2:$3/proxy$4
+        action: replace
+      - separator: ;
+        regex: (.*)
+        target_label: __address__
+        replacement: api.kcluster.prod.aws.aurotfp.com:443
+        action: replace
+      - separator: ;
+        regex: __meta_kubernetes_pod_label_(.+)
+        replacement: $1
+        action: labelmap
+      - source_labels: [__meta_kubernetes_namespace]
+        separator: ;
+        regex: (.*)
+        target_label: kubernetes_namespace
+        replacement: $1
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_name]
+        separator: ;
+        regex: (.*)
+        target_label: kubernetes_pod_name
+        replacement: $1
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_node_name]
+        separator: ;
+        regex: (.*)
+        target_label: instance
+        replacement: $1
+        action: replace
+    - job_name: cb-production-data1
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - cb-production-data1:9091
+    - job_name: cb-production-data2
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - cb-production-data2:9091
+    - job_name: cb-production-data3
+      honor_timestamps: true
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+      - targets:
+        - cb-production-data3:9091

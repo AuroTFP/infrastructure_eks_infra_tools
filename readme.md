@@ -40,3 +40,5 @@ kubectl port-forward --namespace monitoring svc/thanos-query 9090:9090 &
 kubectl port-forward --namespace monitoring svc/kube-prometheus-stack-grafana 31080:80
 ```
     
+kubectl create secret generic alertmanager-secret -n monitoring --from-file=./alertmanager-secret.yaml -n monitoring
+

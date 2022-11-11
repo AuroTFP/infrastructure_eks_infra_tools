@@ -1,0 +1,199 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-extra
+  namespace: monitoring
+data:
+  alertmanager-extra.yaml: |
+    inhibit_rules:
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        job: spac-dropcopy-prod-ntp
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        job: spac-poc
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: kminion6:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: kminion3
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: kminion5
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: kminion-dt
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-poc-daily-strat
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-dropcopy-prod:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-strat-prod:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-strat-prod:9091
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-fakevenue-prod.aws.aurotfp.com:9093
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-strat-prod.aws.aurotfp.com:9093
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-proxy-prod.aws.aurotfp.com:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-strat-exosam-prod:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: algo-prod-mc_spacp:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-proxy-prod:9091
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-strat-exosam-prod.aws.aurotfp.com:9093
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-strat-exosam-prod:9091
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-strat-exosam-prod:9090
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: algo-prod-mc_spacp:9091
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: algo-prod-mc_spacp:9090
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: cc-dev-vm1:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: cc-stg-analytics1:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: cc-stg-dgw1:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: cc-stg-mme1:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: cc-stg-compute1:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: cc-stg-compute2:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: cc-prod-mme1:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: cc-stg-jobs1:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: cc-prod-analytics1:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-proxy-prod.aws.aurotfp.com:9093
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-test-proxy-poc.aws.aurotfp.com:9093
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: 10.0.17.96:9093
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: spac-poc2:9093
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: deep-dropcopy-poc:9100
+    - source_match:
+        alertname: QuietHours
+      target_match:
+        instance: deep-dropcopy-prod:9100
+    - source_match:
+        alertname: 24hoursQuiet
+      target_match:
+        instance: airflow-dev.aws.aurotfp.com:8000
+    - source_match:
+        alertname: 24hoursQuiet
+      target_match:
+        instance: spac-poc:9093
+    - source_match:
+        alertname: 24hoursQuiet
+      target_match:
+        instance: spac-poc:9100
+    receivers:
+    - name: operations-team
+      email_configs:
+      - send_resolved: false
+        to: alerts@exosfinancial.com
+        from: prometheus@exosfinancial.com
+        hello: localhost
+        smarthost: email-smtp.us-east-1.amazonaws.com:587
+        auth_username: AKIAIM63ZUVLQBY6UQOQ
+        auth_password: <secret>
+        headers:
+          From: prometheus@exosfinancial.com
+          Subject: '{{ template "email.default.subject" . }}'
+          To: alerts@exosfinancial.com
+        html: '{{ template "email.default.html" . }}'
+        require_tls: true
+      slack_configs:
+      - send_resolved: true
+        http_config: {}
+        api_url: <secret>
+        channel: '#prometheus-alerts'
+        username: '{{ template "slack.default.username" . }}'
+        color: '{{ if eq .Status "firing" }}danger{{ else }}good{{ end }}'
+        title: |-
+          {{ range .Alerts }}{{ .Annotations.summary }}
+          {{ end }}
+        title_link: '{{ template "slack.default.titlelink" . }}'
+        pretext: '{{ template "slack.default.pretext" . }}'
+        text: '{{ template "slack.default.text" . }}'
+        footer: '{{ template "slack.default.footer" . }}'
+        fallback: '{{ template "slack.default.fallback" . }}'
+        callback_id: '{{ template "slack.default.callbackid" . }}'
+        icon_emoji: '{{ template "slack.default.iconemoji" . }}'
+        icon_url: '{{ template "slack.default.iconurl" . }}'
+    - name: blackhole
