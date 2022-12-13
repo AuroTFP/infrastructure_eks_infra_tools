@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_alert: "1"
+  name: alerting-new
+  namespace: monitoring
+data:
+  alerting-new.json: |
+    apiVersion: 1
+    groups:
+      name: Binance-2 throughput alert
+      folder: Crypto
+      interval: 1m
+      rules:
+      - expr: ''
+        for: 5m
+        labels:
+          alertname: Binance-2 throughput alert
+          rule_uid: VRIN5Sjnk
+        annotations:
+          __alertId__: '77'
+          __dashboardUid__: Q8gX6L8nz
+          __panelId__: '370'
+          message: 'Critical: Binance-2 not receiving records, is it down?'
+        grafana_alert:
+          id: 65
+          orgId: 1
+          title: Binance-2 throughput alert
+          condition: B
+          data:
+          - refId: A
+            queryType: ''
+            relativeTimeRange:
+              from: 10
+              to: 0
+            datasourceUid: '000000001'
+            model:
+              expr: irate(binance_c2_total_records_received_total[5m])
+              legendFormat: binance-2
+              refId: A
+          - refId: B
+            queryType: ''
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: "-100"
+            model:
+              type: classic_conditions
+              refId: B
+              conditions:
+              - evaluator:
+                  params:
+                  - 1
+                  type: lt
+                operator:
+                  type: and
+                query:
+                  params:
+                  - A
+                reducer:
+                  type: avg
+          intervalSeconds: 60
+          version: 1
+          uid: VRIN5Sjnk
+          namespace_uid: R2eleLU7k
+          namespace_id: 65
+          rule_group: Binance-2 throughput alert
+          no_data_state: NoData
+          exec_err_state: Alerting

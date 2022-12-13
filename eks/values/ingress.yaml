@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: monitoring
+  name: ruler-ingress
+  annotations:
+      external-dns/zone: private
+      external-dns.alpha.kubernetes.io/hostname: ruler-thanos.aws.aurotfp.com, storegateway-thanos.aws.aurotfp.com, thanos-sidecar-prometheus.aws.aurotfp.com
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/scheme: internal
+      alb.ingress.kubernetes.io/subnets: subnet-0bff897d94caea79c, subnet-0d805eacd24f662d1
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/backend-protocol-version: GRPC
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:770688751007:certificate/a04e263f-8c9d-4e1f-a3ca-8bf79fbcf5e6
+spec:
+  ingressClassName: alb
+  rules:
+    - host: ruler-thanos.aws.aurotfp.com
+      http:
+        paths:
+        - path: /
+          backend:
+            service:
+              name: thanos-ruler    
+              port:
+                name: grpc
+          pathType: Prefix
+    - host: storegateway-thanos.aws.aurotfp.com
+      http:
+        paths:
+        - path: /
+          backend:
+            service:
+              name: thanos-storegateway   
+              port:
+                name: grpc
+          pathType: Prefix
+    - host: thanos-sidecar-prometheus.aws.aurotfp.com
+      http:
+        paths:
+        - path: /
+          backend:
+            service:
+              name: kube-prometheus-stack-thanos-discovery   
+              port:
+                name: grpc
+          pathType: Prefix

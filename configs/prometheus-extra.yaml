@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: prometheus-extra
+  namespace: monitoring
   labels:
     namespace: monitoring
 type: Opaque
@@ -255,15 +256,6 @@ stringData:
       static_configs:
       - targets:
         - airflow-prod.aws.aurotfp.com:8080
-    - job_name: airflow-poc
-      honor_timestamps: true
-      scrape_interval: 30s
-      scrape_timeout: 10s
-      metrics_path: /admin/metrics
-      scheme: http
-      static_configs:
-      - targets:
-        - airflow-poc.aws.aurotfp.com:8080
     - job_name: airflow-dev
       honor_timestamps: true
       scrape_interval: 30s

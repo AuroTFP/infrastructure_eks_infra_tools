@@ -35,7 +35,7 @@ data "aws_eks_cluster_auth" "this" {
   name = module.eks_cluster.eks_cluster_id
 }
 
-/* resource "kubernetes_namespace" "monitoring" {
+resource "kubernetes_namespace" "monitoring" {
 
   metadata {
 
@@ -49,17 +49,18 @@ data "aws_eks_cluster_auth" "this" {
 
     name = "monitoring"
   }
-} */
+}
 
 # EKS cluster creation
 module "eks_cluster" {
   source          = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.13.0"
   cluster_version = "1.23"
-  cluster_name    = "monitoring"
+  cluster_name    = "infra-tools"
+  # vpc_id          = "vpc-095099ed4074eb82e"
   vpc_id          = "vpc-ed1fbb95"
 
   # Depending on your config, you might need to enable this https://aws.amazon.com/premiumsupport/knowledge-center/eks-vpc-subnet-discovery/
-  private_subnet_ids = ["subnet-0bff897d94caea79c","subnet-0d805eacd24f662d1"]
+  private_subnet_ids = ["subnet-05d4d4c4e1892a87f","subnet-0cddf53b1f11420f6"]
   managed_node_groups = {
     mg_t3 = {
       node_group_name = "managed-ondemand"
@@ -67,7 +68,7 @@ module "eks_cluster" {
       desired_size    = 1
       max_size        = 2
       min_size        = 1
-      subnet_ids = ["subnet-0bff897d94caea79c","subnet-0d805eacd24f662d1"]
+      subnet_ids = ["subnet-05d4d4c4e1892a87f","subnet-0cddf53b1f11420f6"]
     }
   }
 }
@@ -93,13 +94,12 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cluster_autoscaler           = true
   enable_metrics_server               = true
   enable_external_dns = true
-
-  enable_cert_manager = true
-  cert_manager_install_letsencrypt_issuers = true
-  cert_manager_letsencrypt_email = "tomas.landaeta@exosfinancial.com"
-
   eks_cluster_domain = "aws.aurotfp.com"
   external_dns_private_zone = true
+  # external_dns_route53_zone_arns = [
+  #   "arn:aws:route53::770688751007:hostedzone/Z2C1J0W0DI15CE"
+  # ]
+
 
   enable_kube_prometheus_stack      = true
   kube_prometheus_stack_helm_config = {
@@ -107,38 +107,7 @@ module "eks_blueprints_kubernetes_addons" {
     version          = "41.6.0"
 
     values = [
-      "${file("values/prometheus.yaml")}"
+      "${file("prometheus.yaml")}"
     ]
   }
-}
-
-resource "helm_release" "thanos" {
-
-  name       = "thanos"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "thanos"
-  namespace  = "monitoring"
-  create_namespace = false
-
-
-  values = [
-    "${file("values/thanos.yaml")}"
-  ]
-
-}
-
-resource "helm_release" "blackbox_exporter" {
-
-  name       = "blackbox-exporter"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "prometheus-blackbox-exporter"
-  version    = "7.1.3"
-  namespace  = "monitoring"
-  create_namespace = false
-
-
-  values = [
-    "${file("values/thanos.yaml")}"
-  ]
-
 }

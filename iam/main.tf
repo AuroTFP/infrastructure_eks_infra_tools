@@ -69,12 +69,31 @@ resource "aws_iam_policy" "thanos_metrics_policy" {
         "ec2:ModifyVolume"
         ],
         Resource=  "*"
+        },
+        {
+          Effect = "Allow"
+          Action = [
+            "route53:ChangeResourceRecordSets"
+          ],
+          Resource = [
+            "arn:aws:route53:::hostedzone/*"
+          ]
+        },
+        {
+          Effect = "Allow"
+          Action = [
+            "route53:ListHostedZones",
+            "route53:ListResourceRecordSets"
+          ],
+          Resource = [
+            "*"
+          ]
         }
     ]
   })
 }
 
-# Service Role
+# Observer cluster role
 resource "aws_iam_role" "thanos_role" {
   name = "thanos-monitoring-role"
   assume_role_policy = jsonencode({
@@ -86,12 +105,12 @@ resource "aws_iam_role" "thanos_role" {
         Sid    = ""
         Principal = {
           # oidc configuration provided by the eks cluster
-          Federated = "arn:aws:iam::770688751007:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/E084187E39B74560B8FD817CC53E72F0"
+          Federated = "arn:aws:iam::770688751007:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/A25A138B04884A7216DFDB5B6492E79C"
         }
         Condition = {
           StringLike = {
-            "oidc.eks.us-east-1.amazonaws.com/id/E084187E39B74560B8FD817CC53E72F0:sub" : "system:serviceaccount:monitoring:thanos-role"
-            "oidc.eks.us-east-1.amazonaws.com/id/E084187E39B74560B8FD817CC53E72F0:aud": "sts.amazonaws.com"
+            "oidc.eks.us-east-1.amazonaws.com/id/A25A138B04884A7216DFDB5B6492E79C:sub" : "system:serviceaccount:monitoring:thanos-role"
+            "oidc.eks.us-east-1.amazonaws.com/id/A25A138B04884A7216DFDB5B6492E79C:aud": "sts.amazonaws.com"
           }
         }
       },
@@ -102,10 +121,45 @@ resource "aws_iam_role" "thanos_role" {
     environment = "dev"
   }
 }
-
-
 resource "aws_iam_role_policy_attachment" "thanos_attach" {
   role       = aws_iam_role.thanos_role.name
   policy_arn = aws_iam_policy.thanos_metrics_policy.arn
 }
+
+# Client clusters roles
+resource "aws_iam_role" "thanos_infra_tools_role" {
+  name = "thanos-infra-tools-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          # oidc configuration provided by the eks cluster
+          Federated = "arn:aws:iam::770688751007:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/E5D083C3F6424102B2DC5B2355E03DCE"
+        }
+        Condition = {
+          StringLike = {
+            "oidc.eks.us-east-1.amazonaws.com/id/E5D083C3F6424102B2DC5B2355E03DCE:sub" : "system:serviceaccount:monitoring:thanos-role"
+            "oidc.eks.us-east-1.amazonaws.com/id/E5D083C3F6424102B2DC5B2355E03DCE:aud": "sts.amazonaws.com"
+          }
+        }
+      },
+    ]
+  })
+
+  tags = {
+    environment = "infra"
+  }
+}
+
+
+resource "aws_iam_role_policy_attachment" "role_attach" {
+  role       = aws_iam_role.thanos_infra_tools_role.name
+  policy_arn = aws_iam_policy.thanos_metrics_policy.arn
+}
+
+
 
